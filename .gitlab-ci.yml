@@ -1,0 +1,23 @@
+stages:
+  - test
+
+run_appium_test:
+  stage: test
+  tags:
+    - linux-runner
+  script:
+    - echo "Ensure appium & python are available"
+    - which appium || (echo "appium not found" && exit 1)
+    - which python3 || (echo "python3 not found" && exit 1)
+    - echo "Start Appium on :4721"
+    - nohup appium -p 4721 > appium.log 2>&1 &
+    - sleep 5
+    - echo "ADB devices:"
+    - adb devices
+    - echo "Run test script"
+    - python3 Membersgram/devices/A71New.py
+  artifacts:
+    paths:
+      - appium.log
+      - TestResult.json
+    expire_in: 1 week
